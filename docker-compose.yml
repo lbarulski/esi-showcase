@@ -1,0 +1,18 @@
+services:
+  app:
+    build: ./
+    container_name: app
+    expose:
+      - 8080
+  varnish:
+    image: varnish:7.6-alpine
+    volumes:
+      - ./default.vcl:/etc/varnish/default.vcl
+    ports:
+      - "8081:80"
+    depends_on:
+      - app
+    environment:
+#      VARNISH_IMPORT_MODULES: cookie,header,digest
+      VARNISH_BACKEND_HOST: app
+      VARNISH_BACKEND_PORT: 8080
